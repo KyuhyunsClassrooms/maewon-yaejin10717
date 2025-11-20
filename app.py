@@ -146,14 +146,14 @@ st.markdown("""
 
 # TODO 1: 제목을 입력하세요 ⭐
 # 정답: "📊 Netflix 데이터 시각화 대시보드"
-st.title("___여기에_제목_입력___")
+st.title("나만의 데이터 시각화 대시보드")
 
 # 사이드바 설정
 st.sidebar.header("⚙️ 설정")
 
 # TODO 2: 파일 경로를 입력하세요 ⭐
 # 정답: "data/netflix_cleaned.csv"
-df_original = pd.read_csv("___파일_경로___")
+df_original = pd.read_csv("data/netflix_cleaned.csv")
 df = df_original.copy()
 
 # =========================================
@@ -167,22 +167,22 @@ st.sidebar.subheader("🔍 데이터 필터")
 # 정답: default=["Movie", "TV Show"]
 content_type_filter = st.sidebar.multiselect(
     "콘텐츠 유형 선택",
-    options=___,
-    default=___
+    options=["Movie", "TV Show"],
+    default=["Movie", "TV Show"]
 )
 
 # TODO 11: 연도 범위 슬라이더 ⭐⭐
 # 정답: int(df_original['release_year'].min()), int(df_original['release_year'].max())
 year_range = st.sidebar.slider(
     "개봉 연도 범위",
-    min_value=___,
-    max_value=___,
-    value=(___, ___)
+    min_value=int(df_original['release_year'].min()),
+    max_value=int(df_original['release_year'].max()),
+    value=(int(df_original['release_year'].min()), int(df_original['release_year'].max()))
 )
 
 # TODO 12: 제목 검색 ⭐
 # 정답: st.sidebar.text_input
-search_query = ___(
+search_query = st.sidebar.text_input(
     "제목 검색 (Enter 후 검색)",
     value=""
 )
@@ -212,7 +212,7 @@ else:
 # TODO 3: df.head()에 몇 개의 행을 표시할지 입력하세요 ⭐
 # 정답: df.head(10)
 st.subheader("📋 데이터 미리보기")
-st.dataframe(df.___)
+st.dataframe(df.head(9))
 
 # =========================================
 # 📊 기본 통계
@@ -245,7 +245,7 @@ with tab1:
     # 정답: 'title_length'
     fig = px.histogram(
         df, 
-        x=___, 
+        x='title_length', 
         nbins=30,
         title="제목 길이 분포",
         labels={'title_length': '제목 길이 (글자 수)', 'count': '개수'},
@@ -259,12 +259,12 @@ with tab1:
     
     # TODO 5: 빈도수를 계산하는 메서드를 입력하세요 ⭐⭐
     # 정답: value_counts()
-    decade_counts = df['decade'].___().sort_index().tail(10)
+    decade_counts = df['decade'].value_counts()().sort_index().tail(10)
     
     # TODO 6: x, y 파라미터를 입력하세요 ⭐⭐
     # 정답: x=decade_counts.index, y=decade_counts.values
     fig = px.bar(
-        ___, ___,
+        x=decade_counts.index, y=decade_counts.values,
         title="연대별 콘텐츠 수",
         labels={'x': '연대', 'y': '콘텐츠 수'},
         color_discrete_sequence=['#E50914']
@@ -275,15 +275,15 @@ with tab1:
     st.subheader("🌍 국가별 콘텐츠 제작량")
     
     # TODO 13: 슬라이더로 상위 N개 선택 ⭐⭐
-    # 정답: st.slider, default값은 10
-    top_n = ___(
+    # 정답:, default값은 10
+    top_n = st.slider(
         "상위 N개 국가 선택",
-        min_value=___,
-        max_value=___,
-        value=___
+        min_value=4,
+        max_value=20,
+        value=10
     )
     
-    country_counts = df['country'].___().head(top_n)
+    country_counts = df['country'].value_counts().head(top_n)
     
     fig = px.bar(
         x=country_counts.values,
@@ -307,14 +307,14 @@ with tab2:
     
     # TODO 7: 빈도수를 계산하는 메서드를 입력하세요 ⭐⭐
     # 정답: value_counts()
-    type_counts = df['type'].___()
+    type_counts = df['type'].value_counts()
     
     # TODO 8: values, names 파라미터를 입력하세요 ⭐⭐
     # 정답: values=type_counts.values, names=type_counts.index
     fig = px.pie(
-        ___, ___,
+        values=type_counts.values, names=type_counts.index,
         title="콘텐츠 유형 비율",
-        color_discrete_sequence=['#E50914', '#564d4d']
+        color_discrete_sequence=['#E50914', "#201e1e"]
     )
     st.plotly_chart(fig, use_container_width=True)
     
